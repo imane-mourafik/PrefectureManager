@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Tableau de bord - Magasinier</title>
+    <link rel="stylesheet" href="/admin-style.css"> <!-- tu peux renommer si tu veux un style séparé -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+<header class="admin-header">
+    <div class="logo">
+        <img src="/logo.png" alt="Logo App">
+    </div>
+    <div class="welcome">
+        Bienvenue, <span th:text="${magasinier.nom}">Magasinier</span>
+    </div>
+    <div>
+        <a href="/Magasinier/logout" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Déconnexion </a>
+    </div>
+</header>
+
+<main class="dashboard">
+    <h2>Que souhaitez-vous faire ?</h2>
+    <div class="card-container">
+        <div class="dashboard-card" onclick="location.href='/commandes'">
+            <i class="fas fa-clipboard-list"></i>
+            <p>Gérer les commandes</p>
+        </div>
+        <div class="dashboard-card" onclick="location.href='/gerer-articles'">
+            <i class="fas fa-box-open"></i>
+            <p>Stock actuel</p>
+        </div>
+
+        <div class="dashboard-card" onclick="location.href='/rapport'">
+            <i class="fas fa-chart-line"></i>
+            <p>Rapport mensuel</p>
+        </div>
+        <div class="dashboard-card" onclick="location.href='/mouvements-stock'">
+            <i class="fas fa-exchange-alt"></i>
+            <p>Mouvements de stock</p>
+        </div>
+        <div class="dashboard-card" onclick="location.href='/notifications'">
+            <i class="fas fa-bell"></i>
+            <p>Notifications</p>
+        </div>
+    </div>
+</main>
+</body>
+</html>

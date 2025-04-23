@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Consultation des Articles</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #e0e7ff, #fef9ff);
+            margin: 0;
+            padding: 0;
+        }
+
+        header.navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            background-color: #4f46e5;
+            color: white;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo a {
+            font-size: 1.8rem;
+            font-weight: bold;
+            text-decoration: none;
+            color: white;
+        }
+
+        .logo img {
+            height: 45px;
+            vertical-align: middle;
+            margin-right: 10px;
+        }
+
+        .logout .btn {
+            background-color: white;
+            color: #4f46e5;
+            font-weight: bold;
+            padding: 0.6rem 1rem;
+            border-radius: 10px;
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+
+        .logout .btn:hover {
+            background-color: #e0e7ff;
+        }
+
+        .dashboard {
+            max-width: 900px;
+            margin: 3rem auto;
+            background-color: #ffffff;
+            border-radius: 15px;
+            padding: 2.5rem;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            text-align: center;
+            color: #1e3a8a;
+            margin-bottom: 2rem;
+            font-weight: 600;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background-color: #6366f1;
+            color: white;
+        }
+
+        th, td {
+            padding: 1rem;
+            text-align: center;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        tbody tr:hover {
+            background-color: #f3f4f6;
+        }
+
+        .btn {
+            padding: 0.5rem 0.9rem;
+            font-size: 0.95rem;
+            border: none;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            display: inline-block;
+        }
+
+        .btn.edit {
+            background-color: #4ade80;
+            color: #065f46;
+        }
+
+        .btn.edit:hover {
+            background-color: #22c55e;
+        }
+
+        .btn.delete {
+            background-color: #f87171;
+            color: white;
+            margin-left: 5px;
+        }
+
+        .btn.delete:hover {
+            background-color: #ef4444;
+        }
+
+        .empty {
+            text-align: center;
+            color: #6b7280;
+            font-style: italic;
+            margin-top: 1rem;
+        }
+
+        .stock-faible {
+            background-color: #ffe6e6 !important;
+        }
+
+        .d-flex {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .mb-3 {
+            margin-bottom: 20px;
+        }
+
+        .alert-warning {
+            background-color: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeeba;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<header class="navbar">
+    <div class="logo">
+        <a href="/admin">
+            <img src="/logo.png" alt="Logo">
+        </a>
+    </div>
+    <div class="logout">
+        <a th:href="@{/logout}" class="btn">Déconnexion</a>
+    </div>
+</header>
+
+<main class="dashboard">
+    <h2 class="text-center mb-4">Liste des Articles</h2>
+
+    <!-- Affichage des alertes pour les types en alerte -->
+    <div th:each="entry : ${typeEnAlerte}">
+        <div th:if="${entry.value}" class="alert alert-warning">
+            Attention ! Le stock total pour le type <strong th:text="${entry.key}"></strong> est inférieur au seuil d'alerte.
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-end mb-3">
+        <a th:href="@{/articles/pdf}" class="btn btn-danger">
+            📄 Exporter en PDF
+        </a>
+    </div>
+
+    <table class="table table-bordered table-hover">
+        <thead class="table-dark">
+        <tr>
+            <th>Nom</th>
+            <th>📄 Description</th>
+            <th>Quantité</th>
+
+            <th>Prix</th>
+            <th>Type d'Article</th>
+            <th>Service d'Affectation</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="article : ${articles}"
+            th:classappend="${article.quantite < article.seuilAlerte} ? 'stock-faible' : ''">
+            <td th:text="${article.nom}"></td>
+            <td th:text="${article.description}"></td>
+            <td th:text="${article.quantite}"></td>
+
+            <td th:text="${article.prix}"></td>
+            <td th:text="${article.typeArticle}"></td>
+            <td th:text="${article.serviceAffecte}"></td>
+
+            <td>
+                <a th:href="@{/supprimer/{id}(id=${article.id})}" class="btn delete"
+                   onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet article ?')">
+                    <i class="fas fa-trash-alt"></i> Supprimer
+                </a>
+            </td>
+        </tr>
+        </tbody>
+
+    </table>
+</main>
+
+</body>
+</html>
