@@ -20,9 +20,9 @@ public class CommandeController {
     @Autowired
     private CommandeRepository commandeRepository;
 
-
     @Autowired
     private FournisseurRepository fournisseurRepository;
+
     @Autowired
     private NotificationService notificationService;
 
@@ -35,64 +35,82 @@ public class CommandeController {
             return "redirect:/accueil";
         }
 
-        model.addAttribute("magasinier", user);  // Ajout du magasinier au modèle
-        return "gerer-commande"; // Affiche la page de gestion des commandes
+        model.addAttribute("magasinier", user);
+        return "gerer-commande";
     }
 
+    // Formulaire d'ajout
     @GetMapping("/ajouter-commande")
-    public String formAjouterCommande(Model model) {
+    public String formAjouterCommande(HttpSession session, Model model) {
+        if (session.getAttribute("user") == null) return "redirect:/accueil";
+
         model.addAttribute("commande", new Commande());
         model.addAttribute("fournisseurs", fournisseurRepository.findAll());
         return "ajouter-commande";
     }
 
 
+
+
+    // Consulter les commandes
+    @GetMapping("/consulter-commande")
+    public String consulterCommandes(HttpSession session, Model model) {
+        if (session.getAttribute("user") == null) return "redirect:/accueil";
+
+        model.addAttribute("commandes", commandeRepository.findAll());
+        return "consulter-commande";
+    }
+
+    // Traitement de l'ajout de commande
     @PostMapping("/ajouter-commande")
-    public String ajouterCommande(@ModelAttribute Commande commande, @RequestParam("fournisseurId") Long fournisseurId) {
+    public String ajouterCommande(@ModelAttribute Commande commande, @RequestParam("fournisseurId") Long fournisseurId, HttpSession session) {
+        Personne user = (Personne) session.getAttribute("user");  // Récupération de l'utilisateur
+
         Fournisseur fournisseur = fournisseurRepository.findById(fournisseurId).orElse(null);
 
         if (fournisseur != null) {
             commande.setFournisseur(fournisseur);
             commandeRepository.save(commande);
+
+            String utilisateurNom = user != null ? user.getNom() : "Inconnu"; // Nom de l'utilisateur
+            notificationService.ajouterNotification("Nouvelle commande enregistrée (#" + commande.getId() + ") par " + utilisateurNom, null);
         }
-        notificationService.ajouterNotification(" Nouvelle commande enregistrée (#" + commande.getId() + ")", null);
 
-        return "redirect:/consulter-commande"; // Attention ici, c'est bien `/commandes` ou `/consulter-commandes` ?
+        return "redirect:/consulter-commande";
     }
 
-
-    @GetMapping("/consulter-commande")
-    public String consulterCommandes(Model model) {
-        model.addAttribute("commandes", commandeRepository.findAll());
-        return "consulter-commande";
-    }
-
-
+    // Suppression de la commande
     @GetMapping("/supprimer-commande/{id}")
-    public String supprimerCommande(@PathVariable Long id) {
+    public String supprimerCommande(@PathVariable Long id, HttpSession session) {
+        Personne user = (Personne) session.getAttribute("user");  // Récupération de l'utilisateur
+
         commandeRepository.findById(id).ifPresent(commande -> {
             commandeRepository.deleteById(id);
-            notificationService.ajouterNotification(
-                    "Commande supprimée (#" + commande.getId() + ")", null);
+
+            String utilisateurNom = user != null ? user.getNom() : "Inconnu"; // Nom de l'utilisateur
+
         });
 
         return "redirect:/consulter-commande";
     }
 
-    // Afficher le formulaire de modification d'une commande
-    @GetMapping("/modifier-commande/{id}")
-    public String modifierCommande(@PathVariable Long id, Model model) {
-        Optional<Commande> commande = commandeRepository.findById(id);
 
+    // Afficher le formulaire de modification
+    @GetMapping("/modifier-commande/{id}")
+    public String modifierCommande(@PathVariable Long id, HttpSession session, Model model) {
+        if (session.getAttribute("user") == null) return "redirect:/accueil";
+
+        Optional<Commande> commande = commandeRepository.findById(id);
         if (commande.isPresent()) {
             model.addAttribute("commande", commande.get());
             model.addAttribute("fournisseurs", fournisseurRepository.findAll());
-            return "modifier-commande"; // Retourne la vue du formulaire de modification
+            return "modifier-commande";
         } else {
-            return "redirect:/consulter-commande"; // Si la commande n'existe pas, rediriger vers la liste des commandes
+            return "redirect:/consulter-commande";
         }
     }
-    // Enregistrer les modifications de la commande
+
+    // Sauvegarder les modifications
     @PostMapping("/modifier-commande/{id}")
     public String modifierCommande(@PathVariable Long id, @ModelAttribute Commande commande, @RequestParam("fournisseurId") Long fournisseurId) {
         Optional<Commande> existingCommande = commandeRepository.findById(id);
@@ -102,7 +120,6 @@ public class CommandeController {
             updatedCommande.setDate(commande.getDate());
             updatedCommande.setStatut(commande.getStatut());
 
-            // Vous pouvez également mettre à jour le fournisseur si nécessaire
             Fournisseur fournisseur = fournisseurRepository.findById(fournisseurId).orElse(null);
             if (fournisseur != null) {
                 updatedCommande.setFournisseur(fournisseur);
@@ -111,10 +128,6 @@ public class CommandeController {
             commandeRepository.save(updatedCommande);
         }
 
-        return "redirect:/consulter-commande"; // Redirige vers la page de gestion des commandes après la modification
+        return "redirect:/consulter-commande";
     }
-
-
-
-
 }
