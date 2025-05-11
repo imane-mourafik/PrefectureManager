@@ -1,10 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+<form action="/verify-reset-code" method="post">
+  <input type="hidden" name="email" th:value="${email}">
+  <input type="text" name="code" placeholder="Code de vérification" required>
+  <button type="submit">Vérifier</button>
+</form>

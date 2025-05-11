@@ -1,6 +1,8 @@
 package org.example.projetgestionstockp.Controller;
 
+import jakarta.servlet.http.HttpSession;
 import org.example.projetgestionstockp.Model.Article;
+import org.example.projetgestionstockp.Model.Personne;
 import org.example.projetgestionstockp.Model.StockMouvement;
 import org.example.projetgestionstockp.Repository.ArticleRepository;
 import org.example.projetgestionstockp.Service.ArticleService;
@@ -39,8 +41,11 @@ public class ArticleController {
         return "ajouter-article";
     }
 
+    // Ajouter un article
     @PostMapping("/ajouter-article")
-    public String ajouterArticle(@ModelAttribute("article") Article article) {
+    public String ajouterArticle(@ModelAttribute("article") Article article, HttpSession session) {
+        Personne user = (Personne) session.getAttribute("user");  // Récupération de l'utilisateur
+
         articleRepository.save(article);
 
         // Enregistrer le mouvement de stock - ENTREE
@@ -51,16 +56,18 @@ public class ArticleController {
         mvt.setArticle(article);
         mvt.setDescription("Ajout d’un nouvel article");
         stockMouvementService.enregistrerMouvement(mvt);
-        notificationService.ajouterNotification("🆕 Nouvel article ajouté : " + article.getNom(), null);
 
+        String utilisateurNom = user != null ? user.getNom() : "Inconnu"; // Nom de l'utilisateur
+        notificationService.ajouterNotification(" Nouvel article ajouté : " + article.getNom() + " par " + utilisateurNom, null);
 
         return "redirect:/consulter-article";
     }
 
-
-
+    // Suppression d'un article
     @GetMapping("/supprimer/{id}")
-    public String supprimerArticle(@PathVariable("id") Long id) {
+    public String supprimerArticle(@PathVariable("id") Long id, HttpSession session) {
+        Personne user = (Personne) session.getAttribute("user");  // Récupération de l'utilisateur
+
         Article article = articleRepository.findById(id).orElse(null);
 
         if (article != null) {
@@ -74,12 +81,14 @@ public class ArticleController {
             stockMouvementService.enregistrerMouvement(mvt);
 
             articleService.supprimerArticle(id);
-            notificationService.ajouterNotification(" Un article est supprimer  : " + article.getNom(), null);
 
+            String utilisateurNom = user != null ? user.getNom() : "Inconnu"; // Nom de l'utilisateur
+            notificationService.ajouterNotification("Un article a été supprimé : " + article.getNom() + " par " + utilisateurNom, null);
         }
 
         return "redirect:/consulter-article";
     }
+
 
     @GetMapping("/consulter-article")
     public String consulterArticles(Model model) {
@@ -88,4 +97,19 @@ public class ArticleController {
         return "consulter-article";
     }
 
+    @GetMapping("/rechercher-articles")
+    public String rechercherArticles(@RequestParam("motCle") String motCle, Model model) {
+        List<Article> articles = articleRepository.findByNomContainingIgnoreCase(motCle);
+        model.addAttribute("articles", articles);
+        model.addAttribute("motCle", motCle); // pour réafficher dans le champ
+        return "consulter-article";
+    }
+
+    @GetMapping("/consulterstockAdmine")
+    public String consulterArticles2(Model model) {
+        List<Article> articles = articleRepository.findAll();
+        model.addAttribute("articles", articles);
+
+        return "consulterstockAdmine";
+    }
 }

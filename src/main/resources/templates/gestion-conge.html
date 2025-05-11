@@ -1,10 +1,46 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>$Title$</title>
+  <title>Gestion des Congés</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-$END$
+<div class="container mt-5">
+  <h2>Gestion des Demandes de Congé</h2>
+  <table class="table table-bordered">
+    <thead>
+    <tr>
+      <th>Nom de l'employé</th>
+      <th>Date de début</th>
+      <th>Date de fin</th>
+      <th>Type de congé</th>
+      <th>Statut</th>
+      <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <th:block th:each="demande : ${demandes}">
+      <tr>
+        <td th:text="${demande.personne.nom} + ' ' + ${demande.personne.prenom}"></td>
+        <td th:text="${demande.dateDebut}"></td>
+        <td th:text="${demande.dateFin}"></td>
+        <td th:text="${demande.typeCongé}"></td>
+        <td th:text="${demande.statut}"></td>
+        <td>
+          <form th:action="@{/admin/traiter-demande}" method="post">
+            <input type="hidden" th:value="${demande.id}" name="congeId"/>
+            <input type="radio" name="statut" value="Validée" required/> Validée
+            <input type="radio" name="statut" value="Refusée" required/> Refusée
+            <button type="submit" class="btn btn-primary mt-2">Traiter</button>
+          </form>
+        </td>
+      </tr>
+    </th:block>
+    </tbody>
+  </table>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

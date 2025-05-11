@@ -1,10 +1,133 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <title>$Title$</title>
+  <title>Réclamations - Administrateur</title>
+
+  <!-- Intégration de FontAwesome pour les icônes -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
+  <!-- Styles CSS modernes -->
+  <style>
+    /* Global styles */
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f4f7fa;
+      margin: 0;
+      padding: 0;
+      color: #333;
+    }
+
+    h2 {
+      color: #333;
+      text-align: center;
+      margin-top: 30px;
+    }
+
+    .container {
+      width: 90%;
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 30px;
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Table styling */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    th, td {
+      padding: 12px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+
+    th {
+      background-color: #007bff;
+      color: white;
+    }
+
+    tr:hover {
+      background-color: #f1f1f1;
+    }
+
+    /* Pagination style */
+    .pagination {
+      display: flex;
+      justify-content: center;
+      margin-top: 20px;
+    }
+
+    .pagination a {
+      padding: 8px 16px;
+      margin: 0 5px;
+      background-color: #007bff;
+      color: white;
+      text-decoration: none;
+      border-radius: 5px;
+    }
+
+    .pagination a:hover {
+      background-color: #0056b3;
+    }
+
+    .pagination a.active {
+      background-color: #0056b3;
+    }
+
+    /* Mobile responsiveness */
+    @media (max-width: 600px) {
+      .container {
+        width: 100%;
+        padding: 20px;
+      }
+
+      table {
+        font-size: 14px;
+      }
+    }
+
+  </style>
 </head>
 <body>
-$END$
+
+<div class="container">
+  <h2><i class="fas fa-exclamation-circle"></i> Liste des Réclamations</h2>
+
+  <table>
+    <thead>
+    <tr>
+      <th><i class="fas fa-user"></i> Nom</th>
+      <th><i class="fas fa-user"></i> Prénom</th>
+      <th><i class="fas fa-tag"></i> Objet</th>
+      <th><i class="fas fa-pencil-alt"></i> Contenu</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="reclamation : ${reclamations}">
+      <td th:text="${reclamation.nom}"></td>
+      <td th:text="${reclamation.prenom}"></td>
+      <td th:text="${reclamation.objet}"></td>
+      <td th:text="${reclamation.contenu}"></td>
+    </tr>
+    </tbody>
+  </table>
+
+  <!-- Pagination example -->
+  <div class="pagination">
+    <a href="#" class="active">1</a>
+    <a href="#">2</a>
+    <a href="#">3</a>
+    <a href="#">...</a>
+    <a href="#">Next <i class="fas fa-chevron-right"></i></a>
+  </div>
+
+</div>
+
 </body>
 </html>

@@ -1,10 +1,91 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <title>$Title$</title>
+  <title>Donnez votre avis</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #e0eafc, #cfdef3);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    h2 {
+      font-size: 2em;
+      margin-bottom: 10px;
+    }
+
+    .emoji-container {
+      display: flex;
+      gap: 30px;
+      font-size: 3rem;
+      margin-top: 20px;
+    }
+
+    .emoji {
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+
+    .emoji:hover {
+      transform: scale(1.3);
+    }
+
+    .actions {
+      margin-top: 40px;
+    }
+
+    .btn {
+      background-color: #0078d7;
+      color: white;
+      padding: 12px 25px;
+      border: none;
+      border-radius: 8px;
+      font-size: 1em;
+      margin: 10px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .btn:hover {
+      background-color: #005a9e;
+    }
+  </style>
 </head>
 <body>
-$END$
+<h2>Avant de partir, souhaitez-vous nous donner votre avis ?</h2>
+
+<div class="actions">
+  <button class="btn" onclick="document.getElementById('feedback-zone').style.display = 'flex'">Oui, je veux donner mon avis</button>
+  <button class="btn" onclick="window.location.href='/accueil'">Non merci</button>
+</div>
+
+<div id="feedback-zone" style="display: none; flex-direction: column; align-items: center;">
+  <p style="margin-top: 30px; font-size: 1.2em;">Comment évalueriez-vous notre application ?</p>
+  <div class="emoji-container">
+    <div class="emoji" onclick="envoyer(1)">😡</div>
+    <div class="emoji" onclick="envoyer(2)">😐</div>
+    <div class="emoji" onclick="envoyer(3)">😊</div>
+  </div>
+</div>
+
+<script>
+  function envoyer(note) {
+    fetch('/api/avis', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ note: note })
+    }).then(r => r.text())
+            .then(msg => {
+              alert(msg);
+              window.location.href = "/accueil";
+            });
+  }
+</script>
 </body>
 </html>

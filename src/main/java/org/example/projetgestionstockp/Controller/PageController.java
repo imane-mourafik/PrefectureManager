@@ -8,6 +8,6 @@ public class PageController {
 
     @GetMapping("/rapport")
     public String afficherRapport() {
-        return "rapport"; // ça retourne vers rapport.jsp
+        return "rapport";
     }
 }

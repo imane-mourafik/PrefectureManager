@@ -15,4 +15,9 @@ public interface PersonneRepository extends JpaRepository<Personne, Long> {
     boolean existsByEmail(String email);
 
     void deleteByEmail(String email);
+
+    Personne findByNom(String nom);
+
+
+
 }

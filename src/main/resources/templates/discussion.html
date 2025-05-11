@@ -1,10 +1,217 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <title>$Title$</title>
+  <title>Discussion</title>
+
+  <!-- Librairie pour emojis -->
+  <script src="https://cdn.jsdelivr.net/npm/@joeattardi/emoji-button@4.6.2/dist/index.min.js"></script>
+
+  <style>
+    /* Mise en forme globale */
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f2f2f2;
+      margin: 0;
+      padding: 20px;
+    }
+
+    /* Conteneur des messages */
+    #messagesContainer {
+      background: white;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+      height: 400px;
+      overflow-y: auto;
+      padding: 15px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Style de chaque message */
+    .message {
+      margin-bottom: 10px;
+      padding: 10px;
+      border-radius: 10px;
+      max-width: 75%;
+      position: relative;
+    }
+
+    /* Style spécifique si c'est l'utilisateur courant */
+    .you {
+      background-color: #dcf8c6;
+      align-self: flex-end;
+    }
+
+    /* Style pour les messages des autres */
+    .other {
+      background-color: #f1f0f0;
+      align-self: flex-start;
+    }
+
+    /* Ligne en bas pour écrire */
+    #chatBar {
+      margin-top: 10px;
+    }
+
+    #msgInput {
+      padding: 10px;
+      width: 65%;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+
+    button, #emoji-btn {
+      padding: 10px 15px;
+      margin-left: 10px;
+      border: none;
+      border-radius: 8px;
+      background-color: #4CAF50;
+      color: white;
+      cursor: pointer;
+    }
+
+    button:hover, #emoji-btn:hover {
+      background-color: #45a049;
+    }
+
+    /* Partie du haut de chaque message */
+    .meta-line {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.75em;
+      color: gray;
+      margin-bottom: 5px;
+    }
+
+    .delete-btn {
+      background: none;
+      border: none;
+      color: red;
+      cursor: pointer;
+      margin-left: 10px;
+    }
+  </style>
 </head>
 <body>
-$END$
+
+<!-- Conteneur des messages -->
+<div id="messagesContainer"></div>
+
+<!-- Barre de saisie -->
+<div id="chatBar">
+  <input id="msgInput" type="text" placeholder="Écrivez un message...">
+  <button id="emoji-btn">😊</button>
+  <button onclick="sendMessage()">Envoyer</button>
+</div>
+
+<!-- Librairies SockJS et STOMP pour WebSocket -->
+<script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+
+<script>
+  // Initialisation de la connexion WebSocket
+  let socket = new SockJS('/chat-websocket');
+  let stompClient = Stomp.over(socket);
+  let currentUser = null;
+
+  // Récupération de l'utilisateur courant
+  fetch("/user")
+          .then(res => res.text())
+          .then(username => {
+            currentUser = username;
+          });
+
+  // Connexion STOMP
+  stompClient.connect({}, function () {
+    // Charger les anciens messages
+    fetch('/messages')
+            .then(res => res.json())
+            .then(data => data.forEach(displayMessage));
+
+    // S'abonner au topic de nouveaux messages
+    stompClient.subscribe('/topic/messages', function (msg) {
+      displayMessage(JSON.parse(msg.body));
+    });
+  });
+
+  // Fonction d'envoi de message
+  function sendMessage() {
+    const msg = document.getElementById("msgInput").value;
+    if (msg.trim() === "") return;
+
+    stompClient.send("/app/chat", {}, JSON.stringify({
+      content: msg,
+      sender: currentUser
+    }));
+
+    document.getElementById("msgInput").value = "";
+  }
+
+  // Fonction d'affichage d'un message
+  function displayMessage(msg) {
+    const container = document.getElementById("messagesContainer");
+
+    // Création du div du message
+    const div = document.createElement("div");
+    div.classList.add("message");
+    div.classList.add(msg.sender === currentUser ? "you" : "other");
+
+    // Ligne d'information (nom + heure)
+    const metaLine = document.createElement("div");
+    metaLine.className = "meta-line";
+
+    const sender = document.createElement("span");
+    sender.textContent = msg.sender;
+
+    const time = document.createElement("span");
+    const date = new Date(msg.timestamp);
+    time.textContent = date.toLocaleTimeString();
+
+    metaLine.appendChild(sender);
+    metaLine.appendChild(time);
+
+    // Contenu du message
+    const content = document.createElement("div");
+    content.textContent = msg.content;
+
+    // Ajout de tout dans le div principal
+    div.appendChild(metaLine);
+    div.appendChild(content);
+
+    // Bouton de suppression si c'est ton message
+    if (msg.sender === currentUser) {
+      const del = document.createElement("button");
+      del.className = "delete-btn";
+      del.textContent = "🗑️";
+      del.onclick = function () {
+        fetch("/messages/delete/" + msg.id, { method: "POST" })
+                .then(() => container.removeChild(div));
+      };
+      div.appendChild(del);
+    }
+
+    // Ajout au conteneur et scroll automatique
+    container.appendChild(div);
+    container.scrollTop = container.scrollHeight;
+  }
+
+  // Intégration du Emoji Picker
+  const picker = new EmojiButton();
+  const button = document.querySelector('#emoji-btn');
+  const input = document.querySelector('#msgInput');
+
+  picker.on('emoji', emoji => {
+    input.value += emoji;
+  });
+
+  button.addEventListener('click', () => {
+    // Log pour vérifier si l'événement est capturé
+    console.log('Bouton emoji cliqué');
+    picker.togglePicker(button);
+  });
+</script>
+
 </body>
 </html>

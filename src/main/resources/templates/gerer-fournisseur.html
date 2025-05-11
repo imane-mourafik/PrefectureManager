@@ -1,10 +1,125 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <title>$Title$</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gérer les Fournisseurs</title>
+  <link rel="stylesheet" th:href="@{/css/styles.css}" />
+  <link rel="stylesheet" href="/admin-style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f2f2f2;
+    }
+    .container {
+      max-width: 900px;
+      margin: 50px auto;
+      text-align: center;
+    }
+    .admin-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #4f46e5;
+      color: white;
+      padding: 20px 40px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .logo img {
+      height: 40px;
+    }
+
+    .logout-btn {
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .logout-btn i {
+      margin-right: 5px;
+    }
+
+    h2 {
+      color: #2c3e50;
+      margin-bottom: 40px;
+    }
+
+    .card-container {
+      display: flex;
+      justify-content: space-around;
+      flex-wrap: wrap;
+    }
+
+    .card {
+      background-color: white;
+      border-radius: 12px;
+      padding: 2rem;
+      margin: 15px;
+      width: 260px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      text-align: center;
+      transition: transform 0.3s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    }
+
+    .card i {
+      font-size: 2.5rem;
+      color: #4f46e5;
+      margin-bottom: 15px;
+    }
+
+    .card h3 {
+      margin-bottom: 1rem;
+      font-size: 1.3rem;
+      color: #333;
+    }
+
+    .card a {
+      display: inline-block;
+      margin-top: 10px;
+      text-decoration: none;
+      background-color: #4f46e5;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 6px;
+      transition: background-color 0.3s ease;
+    }
+
+    .card a:hover {
+      background-color: #3730a3;
+    }
+  </style>
 </head>
 <body>
-$END$
+<header class="admin-header">
+  <div class="logo">
+    <img src="/logo.png" alt="Logo App">
+  </div>
+  <div>
+    <a href="/Magasinier/logout" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Déconnexion</a>
+  </div>
+</header>
+
+<div class="container">
+  <h2>Gestion des Fournisseurs</h2>
+  <div class="card-container">
+    <div class="card">
+      <i class="fas fa-plus-circle"></i>
+      <h3>Ajouter Fournisseur</h3>
+      <a th:href="@{/ajouter-fournisseur}">Ajouter</a>
+    </div>
+    <div class="card">
+      <i class="fas fa-clipboard-list"></i>
+      <h3>Consulter Fournisseurs</h3>
+      <a th:href="@{/consulter-fournisseur}">Consulter</a>
+    </div>
+  </div>
+</div>
 </body>
 </html>

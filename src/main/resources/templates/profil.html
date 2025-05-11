@@ -1,10 +1,107 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>$Title$</title>
+  <title>Mon Profil </title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #f4f7fc;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Poppins', sans-serif;
+      color: #333;
+    }
+
+    .profile-card {
+      background: #ffffff;
+      padding: 30px 40px;
+      border-radius: 15px;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 600px;
+      text-align: center;
+      border-left: 5px solid #0056b3;
+    }
+
+    .profile-card h2 {
+      font-size: 28px;
+      color: #2c3e50;
+      margin-bottom: 10px;
+    }
+
+    .profile-card p {
+      font-size: 14px;
+      color: #7f8c8d;
+      margin-bottom: 30px;
+    }
+
+    .profile-item {
+      text-align: left;
+      font-size: 16px;
+      margin-bottom: 15px;
+    }
+
+    .profile-item strong {
+      color: #34495e;
+    }
+
+    .profile-item i {
+      color: #0056b3;
+      margin-right: 10px;
+    }
+
+    .btn-primary {
+      background-color: #0056b3;
+      border: none;
+      padding: 12px 30px;
+      font-size: 16px;
+      border-radius: 8px;
+      transition: background-color 0.3s;
+    }
+
+    .btn-primary:hover {
+      background-color: #004494;
+    }
+
+    .icon {
+      color: #0056b3;
+      margin-right: 10px;
+    }
+
+    .footer {
+      margin-top: 20px;
+      color: #7f8c8d;
+    }
+  </style>
 </head>
 <body>
-$END$
+
+<div class="profile-card">
+  <h2 th:text="${personne.prenom + ' ' + personne.nom}">Nom Prénom</h2>
+  <p th:text="${personne.role}">Rôle</p>
+
+  <!-- Information du profil -->
+  <div class="profile-item"><i class="fas fa-envelope icon"></i><strong>Email :</strong> <span th:text="${personne.email}"></span></div>
+  <div class="profile-item"><i class="fas fa-phone-alt icon"></i><strong>Téléphone :</strong> <span th:text="${personne.telephone}"></span></div>
+  <div class="profile-item"><i class="fas fa-map-marker-alt icon"></i><strong>Adresse :</strong> <span th:text="${personne.adresse}"></span></div>
+  <div class="profile-item"><i class="fas fa-credit-card icon"></i><strong>Numéro de Carte :</strong> <span th:text="${personne.numCarte}"></span></div>
+  <div class="profile-item"><i class="fas fa-credit-card icon"></i><strong>Date de récrutement :</strong> <span th:text="${personne.dateRecrutement}"></span></div>
+  <div class="profile-item"><i class="fas fa-map-marker-alt icon"></i><strong>Service:</strong> <span th:text="${personne.service}"></span></div>
+
+  <!-- Bouton Retour -->
+  <div class="mt-4">
+    <a class="btn btn-primary" href="/employe">Retour</a>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <small>© 2025 -. Tous droits réservés.</small>
+  </div>
+</div>
+
 </body>
 </html>

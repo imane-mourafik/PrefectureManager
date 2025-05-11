@@ -2,9 +2,9 @@ package org.example.projetgestionstockp.Controller;
 
 import jakarta.validation.Valid;
 import org.example.projetgestionstockp.Model.Personne;
-import org.example.projetgestionstockp.Model.Role;
 import org.example.projetgestionstockp.Repository.PersonneRepository;
 import org.example.projetgestionstockp.Service.PersonneService;
+import org.example.projetgestionstockp.Utils.PythonSalairePredictor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,7 +15,7 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/gererEmployes")
-public class EmployeController {
+public class gererEmployeController {
 
     @Autowired
     private PersonneRepository personneRepository;
@@ -40,21 +40,23 @@ public class EmployeController {
 
 
     @PostMapping("/ajouter-employe")
-    public String ajouterEmploye(
-            @Valid @ModelAttribute("personne") Personne personne,
-            BindingResult bindingResult,
-            @RequestParam Role role) {
+    public String ajouterEmploye(@ModelAttribute Personne personne) {
+        // Prédire le salaire avec l'IA
+        double salaire = PythonSalairePredictor.calculerSalaire(
+                personne.getExperience(),
+                personne.getService(),  // Assure-toi que le service est bien défini
+                personne.getRole().name()
+        );
 
-        if (bindingResult.hasErrors()) {
-            return "ajouter-employe";
-        }
+        // Appliquer le salaire prédit à la personne
+        personne.setSalaire(salaire);
 
-
-        personne.setRole(role);
-        personneService.ajouterPersonne(personne);
+        // Enregistrer dans la base
+        personneRepository.save(personne);
 
         return "redirect:/gererEmployes";
     }
+
     @GetMapping("/consulter-employe")
     public String consulterEmployes(Model model) {
         model.addAttribute("employes", personneRepository.findAll());
@@ -91,6 +93,8 @@ public class EmployeController {
         personneService.mettreAJourPersonne(personne);
         return "redirect:/gererEmployes/consulter-employe";
     }
+
+
 
 
 }

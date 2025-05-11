@@ -1,10 +1,153 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <title>$Title$</title>
+  <title>Modifier Fournisseur</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #e0e7ff, #fef9ff);
+      margin: 0;
+      padding: 0;
+    }
+
+    .dashboard {
+      max-width: 600px;
+      margin: 4rem auto;
+      background-color: #ffffff;
+      border-radius: 15px;
+      padding: 3rem;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
+      animation: fadeIn 0.8s ease;
+    }
+
+    @keyframes fadeIn {
+      from {opacity: 0; transform: translateY(20px);}
+      to {opacity: 1; transform: translateY(0);}
+    }
+
+    .logo-container {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .logo-container img {
+      width: 120px;
+      height: auto;
+    }
+
+    h2 {
+      color: #1e3a8a;
+      text-align: center;
+      margin-bottom: 2rem;
+      font-weight: 600;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      color: #333;
+      font-weight: 500;
+    }
+
+    input[type="text"],
+    input[type="email"] {
+      width: 100%;
+      padding: 0.9rem 1.1rem;
+      margin-bottom: 1.5rem;
+      border: 1px solid #d1d5db;
+      border-radius: 10px;
+      font-size: 1rem;
+      background-color: #f9fafb;
+      transition: all 0.3s ease;
+    }
+
+    input:focus {
+      border-color: #6366f1;
+      background-color: #fff;
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.3);
+      outline: none;
+    }
+
+    .form-buttons {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 1rem;
+    }
+
+    .btn-cancel {
+      background-color: #d1d5db;
+      color: #111;
+      padding: 0.8rem 1.2rem;
+      border-radius: 10px;
+      border: none;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .btn-cancel:hover {
+      background-color: #9ca3af;
+    }
+
+    button[type="submit"] {
+      background-color: #4f46e5;
+      color: white;
+      border: none;
+      padding: 0.9rem 1.5rem;
+      font-size: 1rem;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color 0.3s ease;
+    }
+
+    button[type="submit"]:hover {
+      background-color: #4338ca;
+    }
+
+    .field-icon {
+      margin-right: 0.5rem;
+      color: #4f46e5;
+    }
+  </style>
 </head>
 <body>
-$END$
+
+<div class="dashboard">
+
+  <!-- Logo -->
+  <div class="logo-container">
+    <img src="/logo.png" alt="Logo">
+  </div>
+
+  <h2><i class="fas fa-industry field-icon"></i> Modifier Fournisseur</h2>
+
+  <form th:action="@{/modifier-fournisseur/{id}(id=${fournisseur.id})}" th:object="${fournisseur}" method="post">
+
+    <label for="nom"><i class="fas fa-user field-icon"></i> Nom :</label>
+    <input type="text" id="nom" th:field="*{nom}" placeholder="Nom du fournisseur" required>
+
+    <label for="telephone"><i class="fas fa-phone field-icon"></i> Téléphone :</label>
+    <input type="text" id="telephone" th:field="*{telephone}" placeholder="Numéro de téléphone" required>
+
+    <label for="email"><i class="fas fa-envelope field-icon"></i> Email :</label>
+    <input type="email" id="email" th:field="*{email}" placeholder="Adresse e-mail" required>
+
+    <label for="adresse"><i class="fas fa-map-marker-alt field-icon"></i> Adresse :</label>
+    <input type="text" id="adresse" th:field="*{adresse}" placeholder="Adresse du fournisseur" required>
+
+    <div class="form-buttons">
+      <a href="/consulter-fournisseur" class="btn-cancel">Annuler</a>
+      <button type="submit"><i class="fas fa-save"></i> Enregistrer</button>
+    </div>
+
+  </form>
+</div>
+
 </body>
 </html>

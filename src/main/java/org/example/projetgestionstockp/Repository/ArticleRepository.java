@@ -12,6 +12,8 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
     long countByQuantiteLessThan(int seuil);
     @Query("SELECT a.typeArticle, COUNT(a) FROM Article a GROUP BY a.typeArticle")
     List<Object[]> countArticlesByType();
+    List<Article> findByNomContainingIgnoreCase(String motCle);
+
 
 
 

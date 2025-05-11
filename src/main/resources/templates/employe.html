@@ -1,10 +1,184 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>$Title$</title>
+  <title>Espace Employé - PrefectureMohammédia</title>
+
+  <!-- Bootstrap + Font Awesome -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <!-- Styles personnalisés -->
+  <style>
+    body {
+      background-color: #f1f4f9;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    .navbar-custom {
+      background: linear-gradient(to right, #0d47a1, #1976d2);
+      color: white;
+    }
+
+    .logo {
+      max-height: 50px;
+    }
+
+    .dashboard {
+      max-width: 900px;
+      margin: 50px auto;
+      padding: 40px;
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+    }
+
+    .dashboard h1 {
+      font-size: 28px;
+      color: #0d47a1;
+      margin-bottom: 40px;
+    }
+
+    .card-link {
+      border: none;
+      border-radius: 10px;
+      padding: 25px;
+      background: #e3f2fd;
+      transition: all 0.3s ease;
+      color: #0d47a1;
+      font-size: 18px;
+    }
+
+    .card-link:hover {
+      background: #bbdefb;
+      transform: translateY(-3px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .card-icon {
+      font-size: 28px;
+      margin-bottom: 10px;
+    }
+
+    .reclamation-card:hover {
+      background: #ffcdd2 !important;
+      transform: translateY(-3px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    footer {
+      margin-top: 60px;
+      text-align: center;
+      font-size: 0.9em;
+      color: #888;
+    }
+
+    @media screen and (max-width: 768px) {
+      .card-link {
+        font-size: 16px;
+      }
+    }
+
+    /* Chatbot Dialogflow (bottom-right) */
+    df-messenger {
+      --df-messenger-button-titlebar-color: #0d47a1;
+      --df-messenger-button-titlebar-font-color: white;
+      --df-messenger-chat-background-color: #ffffff;
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 999;
+    }
+
+    /* Bouton Discussion (bottom-left) */
+    .discussion-fixe {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      z-index: 998;
+      padding: 12px 20px;
+      border-radius: 50px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    }
+  </style>
 </head>
 <body>
-$END$
+
+<!-- Navigation -->
+<nav class="navbar navbar-custom navbar-expand-lg px-4 py-3">
+  <a class="navbar-brand d-flex align-items-center" href="#">
+    <img src="/logo.png" alt="Logo" class="logo me-3">
+    PrefectureMohammédia
+  </a>
+  <div class="ms-auto">
+    <a class="btn btn-outline-light" th:href="@{/employe/logout}">
+      <i class="fas fa-sign-out-alt"></i> Déconnexion
+    </a>
+  </div>
+</nav>
+
+<!-- Tableau de bord -->
+<div class="dashboard text-center">
+  <h1>Bienvenue sur votre espace Employé</h1>
+  <div class="row g-4">
+    <div class="col-md-6">
+      <a class="card-link d-block" th:href="@{/profil}">
+        <div class="card-icon"><i class="fas fa-user-circle"></i></div>
+        Voir mon profil
+      </a>
+    </div>
+    <div class="col-md-6">
+      <a class="card-link d-block" th:href="@{/modifier-informations}">
+        <div class="card-icon"><i class="fas fa-user-edit"></i></div>
+        Modifier mes informations
+      </a>
+    </div>
+    <div class="col-md-6">
+      <a class="card-link d-block" th:href="@{/employe/annonces}">
+        <div class="card-icon"><i class="fas fa-bullhorn"></i></div>
+        Voir les annonces
+      </a>
+    </div>
+    <div class="col-md-6">
+      <a class="card-link d-block reclamation-card" th:href="@{/employe/faire-reclamation}">
+        <div class="card-icon"><i class="fas fa-exclamation-circle"></i></div>
+        Faire une réclamation
+      </a>
+    </div>
+
+
+    <div class="col-md-6">
+      <a class="card-link d-block" th:href="@{/employe/demande-conge}">
+        <div class="card-icon"><i class="fas fa-calendar-alt"></i></div>
+        Demander un congé
+      </a>
+    </div>
+    <div class="col-md-6">
+      <a class="card-link d-block" th:href="@{/employe/confirmation}">
+        <div class="card-icon"><i class="fas fa-calendar-alt"></i></div>
+        suivi votre demande  </a>
+    </div>
+  </div>
+</div>
+
+<!-- Bouton Discussion flottant -->
+<a class="btn btn-primary discussion-fixe" th:href="@{/discussion}">
+  <i class="fas fa-comments"></i> Discussion interne
+</a>
+
+<!-- Footer -->
+<footer>
+  &copy; 2025 PrefectureMohammédia. Tous droits réservés.
+</footer>
+
+<!-- Chatbot Dialogflow -->
+<script src="https://www.gstatic.com/dialogflow-console/fast/messenger/bootstrap.js?v=1"></script>
+<df-messenger
+        intent="WELCOME"
+        chat-title="AssistantEmploye"
+        agent-id="aeb417c6-1595-4821-a4ff-84b751bf6069"
+        language-code="fr"
+></df-messenger>
+
 </body>
 </html>
