@@ -146,6 +146,9 @@ ProjetPFA/
 │       └── ...
 ├── pom.xml
 └── README.md
+|---LICENCE
+|--predire_salaire.py
+|--entrainer_salaire.py
 |__ Dockerfile
 |__ Docker-compose
 |__entrainer_model.py
@@ -203,4 +206,23 @@ Ce projet est sous licence **MIT** — tu peux l'utiliser, le modifier et le red
 
 Voir le fichier [`LICENSE`](./LICENSE) pour plus d’informations.
 
-```text
+---
+## 🤝 Contribution
+
+Tu veux contribuer ?
+
+```bash
+1. Forkez le dépôt (copiez-le sur votre propre compte GitHub)
+2. Créez une nouvelle branche pour votre fonctionnalité :
+   git checkout -b feature/nom-de-la-fonctionnalite
+3. Effectuez vos modifications, puis validez-les :
+   git commit -m "Ajout de la fonctionnalité X"
+4. Poussez vos modifications vers votre dépôt :
+   git push origin feature/nom-de-la-fonctionnalite
+5. Créez une *Pull Request* pour soumettre vos changements ✨
+```
+
+---
+
+Développé avec rigueur et passion pour optimiser la gestion des stocks et améliorer l’organisation administrative des préfectures.
+
