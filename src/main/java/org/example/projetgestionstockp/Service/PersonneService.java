@@ -6,6 +6,7 @@ import org.example.projetgestionstockp.Model.Personne;
 import org.example.projetgestionstockp.Repository.ArchiveRepository;
 import org.example.projetgestionstockp.Repository.PersonneRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -40,6 +41,7 @@ public class PersonneService {
         personneRepository.deleteByEmail(Email);
 
     }
+
 
     ArrayList<Personne> afficherTouslesAdmins() {
         return (ArrayList<Personne>) personneRepository.findAll();

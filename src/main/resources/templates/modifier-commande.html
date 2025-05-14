@@ -74,6 +74,28 @@
       margin-right: 0.5rem;
       color: #4f46e5;
     }
+
+    /* Modification du style des boutons */
+    .add-btn {
+      width: auto;
+      display: inline-block;
+      padding: 0.8rem 1rem;
+      background-color: #4f46e5;
+      color: white;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      margin-top: 1rem;
+      transition: background-color 0.3s ease;
+    }
+
+    .add-btn:hover {
+      background-color: #4338ca;
+    }
+
+    .button-container {
+      margin-top: 1.5rem;
+    }
   </style>
 </head>
 <body>
@@ -103,29 +125,54 @@
       <option value="">-- Choisir un fournisseur --</option>
       <th:block th:each="f : ${fournisseurs}">
         <option th:value="${f.id}" th:text="${f.nom}"
-                th:selected="${commande.fournisseur != null && commande.fournisseur.id == f.id}">
-        </option>
+                th:selected="${commande.fournisseur != null && commande.fournisseur.id == f.id}"></option>
       </th:block>
     </select>
+
     <!-- Sélecteur Type d'Article -->
     <label for="typeArticle"><i class="fas fa-cogs field-icon"></i> Type d'article :</label>
     <select id="typeArticle" name="typeArticle" onchange="updateArticles(this.value)" required>
       <option value="INFORMATIQUE">Informatique</option>
-      <option value="MOBILIER"> MOBILIER</option>
-      <option value="DOCUMENT_ADMINISTRATIF">  DOCUMENT_ADMINISTRATIF</option>
-      <option value="VEHICULE">  VEHICULE</option>
-      <option value="AUTRE">  AUTRE</option>
+      <option value="MOBILIER">Mobiliers</option>
+      <option value="DOCUMENT_ADMINISTRATIF">Documents administratifs</option>
+      <option value="VEHICULE">Véhicules</option>
+      <option value="AUTRE">Autres</option>
       <option th:each="type : ${types}" th:value="${type}" th:text="${type}"></option>
     </select>
 
-
-    <div>
-      <!-- Champ Quantité -->
-      <label for="quantite"><i class="fas fa-hashtag field-icon"></i> Quantité :</label>
-      <input type="number" id="quantite" name="quantite" min="1" required><br>
+    <div id="articles-container">
+      <!-- Une première ligne est ajoutée par défaut -->
+      <div class="article-row">
+        <input type="text" name="noms[]" placeholder="Nom de l'article" required />
+        <input type="number" name="quantites[]" placeholder="Quantité" min="1" required />
+        <input type="number" name="prix[]" placeholder="Prix" min="0" step="0.01" required />
+      </div>
     </div>
 
-    <!-- Bouton de soumission -->
+    <script>
+      function ajouterLigne() {
+        const container = document.getElementById("articles-container");
+
+        const nouvelleLigne = document.createElement("div");
+        nouvelleLigne.classList.add("article-row");
+
+        nouvelleLigne.innerHTML = `
+            <input type="text" name="noms[]" placeholder="Nom de l'article" required />
+            <input type="number" name="quantites[]" placeholder="Quantité" min="1" required />
+            <input type="number" name="prix[]" placeholder="Prix unitaire" min="0" step="0.01" required />
+            <button type="button" onclick="this.parentElement.remove()">-</button>
+        `;
+
+        container.appendChild(nouvelleLigne);
+      }
+    </script>
+
+    <!-- Bouton Ajouter un article -->
+    <div class="button-container">
+      <button type="button" class="add-btn" onclick="ajouterLigne()">+</button>
+    </div><br><br>
+
+    <!-- Bouton Enregistrer -->
     <button type="submit"><i class="fas fa-save"></i> Enregistrer</button>
   </form>
 

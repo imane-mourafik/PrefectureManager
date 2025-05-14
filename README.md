@@ -23,7 +23,7 @@
 
 ## 🎯 Objectif du projet
 
-Fournir une solution numérique complète pour automatiser la gestion du stock et du personnel au sein d’une préfecture : suivi des articles, commandes, mouvements de stock, gestion des employés, traitement des réclamations et demandes de congé.
+Fournir une solution complète pour automatiser la gestion du stock et du personnel au sein d’une préfecture : suivi des articles, commandes, mouvements de stock, gestion des employés, traitement des réclamations et demandes de congé.
 
 ---
 
@@ -61,10 +61,11 @@ Fournir une solution numérique complète pour automatiser la gestion du stock e
 |-----------------------|----------------------------------------|
 | Java                  | Langage principal                      |
 | Spring Boot           | Backend, sécurité                      |
+| Spring Cache          | Mise en cache des résultats pour améliorer les performances |
 | JSP / HTML / CSS      | Frontend (interface utilisateur)       |
 | MySQL                 | Base de données relationnelle          |
 | JPA / Hibernate       | ORM (mapping des entités)              |
-| Python + scikit-learn | Microservice prédiction salaires     |
+| Python + scikit-learn | Microservice prédiction salaires       |
 | GitHub                | Versionnage du code                    |
 | Azure DevOps          | CI/CD, gestion de projet, déploiement  |
 | Docker                | Conteneurisation des services          |
@@ -72,6 +73,7 @@ Fournir une solution numérique complète pour automatiser la gestion du stock e
 | SonarQube             | Analyse qualité du code                |
 | Power BI              | Visualisation des rapports             |
 | WebSocket             | Système de chat intégré                |
+
 
 ---
 
@@ -140,7 +142,14 @@ ProjetPFA/
                 └── ProjetPfaApplication.java
 │   │   └── resources/
 │   │       ├── templates/ (JSP)
-│   │       ├── static/
+│   │       ├── static
+|   |       |      |__documents
+|   |       |                |__Attestation de démission
+|   |       |                |__Attestation de mission professionel
+|   |       |                |__Attestation de salaire
+|   |       |                |__Attestation de travail
+|   |       |                |__/CSS
+|   |       |                |__/png
 │   │       └── application.properties
 │   └── test/
 │       └── ...

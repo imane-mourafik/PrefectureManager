@@ -124,11 +124,13 @@
 
     <!-- Champ Statut -->
     <label for="statut"><i class="fas fa-tasks field-icon"></i> Statut :</label>
-    <select id="statut" th:field="*{statut}">
-      <option value="EN_ATTENTE">En attente</option>
+    <select id="statut" th:field="*{statut}" disabled>
+      <option value="EN_ATTENTE" selected>En attente</option>
       <option value="COMPLÉTÉ">Complété</option>
       <option value="ANNULÉ">Annulé</option>
     </select>
+
+
     <label for="fournisseurId"><i class="fas fa-user-tie field-icon"></i> Fournisseur :</label>
     <select id="fournisseurId" name="fournisseurId" required>
       <option value="">-- Choisir un fournisseur --</option>
@@ -145,17 +147,42 @@
       <option value="AUTRE">  AUTRE</option>
       <option th:each="type : ${types}" th:value="${type}" th:text="${type}"></option>
     </select>
-    <!-- Champ Fournisseur -->
-
-
-
-
-    <div>
-    <!-- Champ Quantité -->
-    <label for="quantite"><i class="fas fa-hashtag field-icon"></i> Quantité :</label>
-      <input type="number" id="quantite" name="quantite" min="1" required class="input-large">
-
+    <div id="articles-container">
+      <!-- Une première ligne est ajoutée par défaut -->
+      <div class="article-row">
+        <input type="text" name="noms[]" placeholder="Nom de l'article" required />
+        <input type="number" name="quantites[]" placeholder="Quantité" min="1" required />
+        <input type="number" name="prix[]" placeholder="Prix" min="0" step="0.01" required />
+        <button type="button" class="add-btn" onclick="ajouterLigne()">+</button>
+      </div>
     </div>
+
+
+
+
+
+    <script>
+      function ajouterLigne() {
+        const container = document.getElementById("articles-container");
+
+        const nouvelleLigne = document.createElement("div");
+        nouvelleLigne.classList.add("article-row");
+
+        nouvelleLigne.innerHTML = `
+            <input type="text" name="noms[]" placeholder="Nom de l'article" required />
+            <input type="number" name="quantites[]" placeholder="Quantité" min="1" required />
+            <input type="number" name="prix[]" placeholder="Prix unitaire" min="0" step="0.01" required />
+            <button type="button" onclick="this.parentElement.remove()">-</button>
+        `;
+
+        container.appendChild(nouvelleLigne);
+      }
+    </script>
+
+
+
+
+
     <button type="submit" style="margin-top: 15px;">Créer commande</button>
 
   </form>

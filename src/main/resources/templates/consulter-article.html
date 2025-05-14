@@ -10,8 +10,6 @@
         body {
             font-family: 'Poppins', sans-serif;
             background: linear-gradient(135deg, #e0e7ff, #fef9ff);
-            margin: 0;
-            padding: 0;
         }
 
         header.navbar {
@@ -21,7 +19,6 @@
             padding: 1rem 2rem;
             background-color: #4f46e5;
             color: white;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         }
 
         .logo a {
@@ -33,7 +30,6 @@
 
         .logo img {
             height: 45px;
-            vertical-align: middle;
             margin-right: 10px;
         }
 
@@ -43,7 +39,6 @@
             font-weight: bold;
             padding: 0.6rem 1rem;
             border-radius: 10px;
-            text-decoration: none;
             transition: background-color 0.3s;
         }
 
@@ -52,7 +47,7 @@
         }
 
         .dashboard {
-            max-width: 900px;
+            max-width: 1000px;
             margin: 3rem auto;
             background-color: #ffffff;
             border-radius: 15px;
@@ -63,8 +58,41 @@
         h2 {
             text-align: center;
             color: #1e3a8a;
-            margin-bottom: 2rem;
+            margin-bottom: 2.5rem;
             font-weight: 600;
+        }
+
+        .search-export-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .search-form {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .search-form input {
+            border-radius: 10px;
+            padding: 0.5rem 1rem;
+            border: 1px solid #d1d5db;
+            width: 250px;
+        }
+
+        .search-form button {
+            background-color: #4f46e5;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            transition: background-color 0.3s;
+        }
+
+        .search-form button:hover {
+            background-color: #4338ca;
         }
 
         table {
@@ -88,52 +116,29 @@
         }
 
         .btn {
-            padding: 0.5rem 0.9rem;
             font-size: 0.95rem;
             border: none;
             border-radius: 8px;
-            text-decoration: none;
             font-weight: 500;
-            display: inline-block;
-        }
-
-        .btn.edit {
-            background-color: #4ade80;
-            color: #065f46;
-        }
-
-        .btn.edit:hover {
-            background-color: #22c55e;
         }
 
         .btn.delete {
             background-color: #f87171;
             color: white;
-            margin-left: 5px;
         }
 
         .btn.delete:hover {
             background-color: #ef4444;
         }
 
-        .empty {
-            text-align: center;
-            color: #6b7280;
-            font-style: italic;
-            margin-top: 1rem;
+        .btn.pdf-export {
+            background-color: #dc2626;
+            color: white;
+            padding: 0.5rem 1rem;
         }
 
-        .stock-faible {
-            background-color: #ffe6e6 !important;
-        }
-
-        .d-flex {
-            display: flex;
-            justify-content: flex-end;
-        }
-
-        .mb-3 {
-            margin-bottom: 20px;
+        .btn.pdf-export:hover {
+            background-color: #b91c1c;
         }
 
         .alert-warning {
@@ -143,6 +148,24 @@
             padding: 1rem;
             margin-bottom: 1.5rem;
             border-radius: 5px;
+        }
+
+        .stock-faible {
+            background-color: #ffe6e6 !important;
+        }
+
+        .mic-button {
+            background-color: #10b981;
+            color: white;
+            border: none;
+            padding: 0.5rem 0.8rem;
+            border-radius: 50%;
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+
+        .mic-button.active {
+            background-color: #059669;
         }
     </style>
 </head>
@@ -160,19 +183,27 @@
 </header>
 
 <main class="dashboard">
-    <h2 class="text-center mb-4">Liste des Articles</h2>
+    <h2>Liste des Articles</h2>
 
-    <!-- Affichage des alertes pour les types en alerte -->
+    <div class="search-export-container">
+        <form id="searchForm" th:action="@{/rechercher-articles}" method="get" class="search-form">
+            <input type="text" name="motCle" id="motCleInput" placeholder="Rechercher un article..." th:value="${motCle}">
+            <button type="submit"><i class="fas fa-search"></i></button>
+            <button type="button" class="mic-button" id="micButton">
+                <i class="fas fa-microphone"></i>
+            </button>
+        </form>
+
+        <a th:href="@{/articles/pdf}" class="btn pdf-export">
+            <i class="fas fa-file-pdf"></i> Exporter en PDF
+        </a>
+    </div>
+
+    <!-- Alerte seuil -->
     <div th:each="entry : ${typeEnAlerte}">
         <div th:if="${entry.value}" class="alert alert-warning">
             Attention ! Le stock total pour le type <strong th:text="${entry.key}"></strong> est inférieur au seuil d'alerte.
         </div>
-    </div>
-
-    <div class="d-flex justify-content-end mb-3">
-        <a th:href="@{/articles/pdf}" class="btn btn-danger">
-            📄 Exporter en PDF
-        </a>
     </div>
 
     <table class="table table-bordered table-hover">
@@ -181,7 +212,6 @@
             <th>Nom</th>
             <th>📄 Description</th>
             <th>Quantité</th>
-
             <th>Prix</th>
             <th>Type d'Article</th>
             <th>Service d'Affectation</th>
@@ -194,11 +224,9 @@
             <td th:text="${article.nom}"></td>
             <td th:text="${article.description}"></td>
             <td th:text="${article.quantite}"></td>
-
             <td th:text="${article.prix}"></td>
             <td th:text="${article.typeArticle}"></td>
             <td th:text="${article.serviceAffecte}"></td>
-
             <td>
                 <a th:href="@{/supprimer/{id}(id=${article.id})}" class="btn delete"
                    onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet article ?')">
@@ -207,9 +235,62 @@
             </td>
         </tr>
         </tbody>
-
     </table>
+
 </main>
+
+<script>
+    const input = document.getElementById('motCleInput');
+    const form = document.getElementById('searchForm');
+    const micButton = document.getElementById('micButton');
+    let typingTimer;
+    const delay = 1000;
+
+    // Saisie clavier
+    input.addEventListener('input', () => {
+        clearTimeout(typingTimer);
+        typingTimer = setTimeout(() => {
+            form.submit();
+        }, delay);
+    });
+
+    input.addEventListener('keydown', () => {
+        clearTimeout(typingTimer);
+    });
+
+    // Reconnaissance vocale
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+    if (SpeechRecognition) {
+        const recognition = new SpeechRecognition();
+        recognition.lang = 'fr-FR';
+        recognition.continuous = false;
+        recognition.interimResults = false;
+
+        micButton.addEventListener('click', () => {
+            recognition.start();
+            micButton.classList.add('active');
+        });
+
+        recognition.onresult = (event) => {
+            const transcript = event.results[0][0].transcript;
+            input.value = transcript;
+            form.submit();
+        };
+
+        recognition.onend = () => {
+            micButton.classList.remove('active');
+        };
+
+        recognition.onerror = (event) => {
+            console.error('Erreur de reconnaissance vocale :', event.error);
+            micButton.classList.remove('active');
+        };
+    } else {
+        micButton.disabled = true;
+        micButton.title = "La reconnaissance vocale n'est pas supportée sur ce navigateur.";
+    }
+</script>
 
 </body>
 </html>
